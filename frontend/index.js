@@ -1,1 +1,1 @@
-let socket = io("ws://localhost:3000/");
+const socket = io("http://localhost:3000");
