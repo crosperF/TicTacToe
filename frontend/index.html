@@ -4,8 +4,25 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>TicTacToe 🕹️</title>
+        <link rel="stylesheet" href="style.css" />
     </head>
     <body>
+        <div class="container">
+            <h1>Tic Tac Toe</h1>
+            <div id="board" class="board">
+                <div class="cell" id="0-0"></div>
+                <div class="cell" id="0-1"></div>
+                <div class="cell" id="0-2"></div>
+                <div class="cell" id="1-0"></div>
+                <div class="cell" id="1-1"></div>
+                <div class="cell" id="1-2"></div>
+                <div class="cell" id="2-1"></div>
+                <div class="cell" id="2-2"></div>
+                <div class="cell" id="2-3"></div>
+            </div>
+            <!-- <button id="reset-button">Reset</button> -->
+        </div>
+
         <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
         <script src="index.js"></script>
     </body>

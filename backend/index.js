@@ -25,9 +25,22 @@ app.get("/", (req, res) => {
     res.send({ msg: "Hello" });
 });
 
-io.on("connection", (socket) => {
-    console.log("a user is connected");
+const gameNamespace = io.of("/game");
+gameNamespace.on("connect", (socket) => {
+    socket.on("join game", (data) => {
+        gameNamespace
+            .in(data.game_id)
+            .emit("msg", `${data.user} has joined the game`);
+    });
 });
+
+// io.on("connection", (socket) => {
+//     console.log("a user is connected");
+
+//     socket.on("select", (data) => {
+//         console.log(data);
+//     });
+// });
 
 server.listen(3000, () => {
     console.log("started listening to server: 3000");
