@@ -27,20 +27,24 @@ app.get("/", (req, res) => {
 
 const gameNamespace = io.of("/game");
 gameNamespace.on("connect", (socket) => {
+    // can stop if the room already has 2 clients
     socket.on("join game", (data) => {
+        socket.join(data.game_id);
         gameNamespace
             .in(data.game_id)
-            .emit("msg", `${data.user} has joined the game`);
+            .emit("new joinee", `${data.user} has joined the game`);
+    });
+
+    //
+    socket.on("player move", (data) => {
+        gameNamespace
+            .in(data.game_id)
+            .emit(
+                "move",
+                `${data.user} has put ${data.symbol} on  cell ${data.cell}`
+            );
     });
 });
-
-// io.on("connection", (socket) => {
-//     console.log("a user is connected");
-
-//     socket.on("select", (data) => {
-//         console.log(data);
-//     });
-// });
 
 server.listen(3000, () => {
     console.log("started listening to server: 3000");
