@@ -1,6 +1,7 @@
 "use strict";
 const new_game = confirm("Do you want to start a new game?");
 const player_symbol = new_game ? "X" : "O";
+let current_player_turn = player_symbol == "X" ? true : false;
 let game_id = String(Math.floor(100000000 + Math.random() * 900000000));
 
 if (!new_game) {
@@ -26,9 +27,9 @@ socket.on("new joinee", (data) => {
 });
 
 socket.on("move", (data) => {
-    // console.log(data);
     if (data.user != username) {
         setCellValue(data.cell, data.symbol);
+        current_player_turn = true;
     }
 });
 
@@ -40,6 +41,11 @@ function setCellValue(cell, symbol) {
 
 const onClickOfCell = (cell) => {
     // check if the move has made the player win
+    
+    if (!current_player_turn) {
+        return;
+    }
+
     setCellValue(cell, player_symbol);
     socket.emit("player move", {
         user: username,
@@ -48,6 +54,7 @@ const onClickOfCell = (cell) => {
         winner: null,
         game_id,
     });
+    current_player_turn = false;
 };
 
 // ADD EVENT LISTENER TO CELLS
