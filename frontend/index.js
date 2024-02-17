@@ -9,6 +9,9 @@ if (!new_game) {
 
 const username = prompt("What is your name?");
 document.getElementById("game_id").innerHTML = "Game Code:" + game_id;
+document.getElementById(
+    "user_info"
+).innerHTML = `Hello ${username}!  Your symbol is ${player_symbol}`;
 
 // const socket = io("http://localhost:3000");
 const socket = io("http://localhost:3000/game");
@@ -23,12 +26,21 @@ socket.on("new joinee", (data) => {
 });
 
 socket.on("move", (data) => {
-    console.log(data);
+    // console.log(data);
+    if (data.user != username) {
+        setCellValue(data.cell, data.symbol);
+    }
 });
+
+function setCellValue(cell, symbol) {
+    const el = document.getElementById(cell);
+    el.innerHTML = symbol;
+    el.classList.add("filled-cell");
+}
 
 const onClickOfCell = (cell) => {
     // check if the move has made the player win
-
+    setCellValue(cell, player_symbol);
     socket.emit("player move", {
         user: username,
         symbol: player_symbol,

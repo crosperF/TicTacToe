@@ -37,12 +37,15 @@ gameNamespace.on("connect", (socket) => {
 
     //
     socket.on("player move", (data) => {
-        gameNamespace
-            .in(data.game_id)
-            .emit(
-                "move",
-                `${data.user} has put ${data.symbol} on  cell ${data.cell}`
-            );
+        gameNamespace.in(data.game_id).emit(
+            "move",
+            {
+                user: data.user,
+                cell: data.cell,
+                symbol: data.symbol,
+            }
+            // `${data.user} has put ${data.symbol} on  cell ${data.cell}`
+        );
     });
 });
 

@@ -55,3 +55,8 @@ button {
 button:hover {
     background-color: #555;
 }
+
+.filled-cell {
+    pointer-events: none;
+    background-color: #ccc;
+}
