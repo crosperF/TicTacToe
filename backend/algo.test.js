@@ -37,16 +37,6 @@ function winningAlgorithm(board, row, col, symbol) {
         }
     }
 
-    // check for draw
-    let count = 0;
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
-            if (board[i][j] != " ") {
-                count++;
-            }
-        }
-    }
-
     if (
         row_is_correct ||
         col_is_correct ||
@@ -56,6 +46,15 @@ function winningAlgorithm(board, row, col, symbol) {
         return true;
     }
 
+    // check for draw
+    let count = 0;
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (board[i][j] != " ") {
+                count++;
+            }
+        }
+    }
     if (count == 9) {
         return null;
     }
