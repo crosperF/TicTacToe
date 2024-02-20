@@ -43,6 +43,7 @@ gameNamespace.on("connect", (socket) => {
                 user: data.user,
                 cell: data.cell,
                 symbol: data.symbol,
+                game_status: data.game_status
             }
             // `${data.user} has put ${data.symbol} on  cell ${data.cell}`
         );
