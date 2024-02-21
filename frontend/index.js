@@ -53,6 +53,11 @@ socket.on("move", (data) => {
     }
 });
 
+/**
+ * Sets the cell value in the ui and global board
+ * @param {*} cell 
+ * @param {*} symbol 
+ */
 function setCellValue(cell, symbol) {
     const el = document.getElementById(cell);
     el.innerHTML = symbol;
@@ -61,6 +66,7 @@ function setCellValue(cell, symbol) {
     board[r][c] = symbol;
 }
 
+// On click callback function
 const onClickOfCell = (cell) => {
     if (!current_player_turn) {
         return;
@@ -72,7 +78,7 @@ const onClickOfCell = (cell) => {
     // check if the move has made the player win
     const [r, c] = cell.split("-");
     let win_status = winningAlgorithm(
-        board,
+        // board,
         Number(r),
         Number(c),
         player_symbol
