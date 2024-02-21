@@ -32,7 +32,7 @@ gameNamespace.on("connect", (socket) => {
         socket.join(data.game_id);
         gameNamespace
             .in(data.game_id)
-            .emit("new joinee", `${data.user} has joined the game`);
+            .emit("new joinee", data.user);
     });
 
     //

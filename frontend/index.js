@@ -1,20 +1,25 @@
 "use strict";
 const new_game = confirm("Do you want to start a new game?");
 const player_symbol = new_game ? "X" : "O";
-let current_player_turn = player_symbol == "X" ? true : false;
+let current_player_turn = false;
 let game_id = String(Math.floor(100000000 + Math.random() * 900000000));
+const board = [
+    [" ", " ", " "],
+    [" ", " ", " "],
+    [" ", " ", " "],
+];
 
 if (!new_game) {
     game_id = prompt("Enter game code to join game");
 }
 
 const username = prompt("What is your name?");
+
 document.getElementById("game_id").innerHTML = "Game Code:" + game_id;
 document.getElementById(
     "user_info"
 ).innerHTML = `Hello ${username}!  Your symbol is ${player_symbol}`;
 
-// const socket = io("http://localhost:3000");
 const socket = io("http://localhost:3000/game");
 socket.emit("join game", {
     game_id: game_id,
@@ -22,8 +27,11 @@ socket.emit("join game", {
 });
 
 // SOCKET LISTENERS
-socket.on("new joinee", (data) => {
-    console.log(data);
+socket.on("new joinee", (name) => {
+    if (name != username) {
+        alert(`new user has ${name} has joined the game!`);
+        current_player_turn = true; // gives the turn for x
+    }
 });
 
 socket.on("move", (data) => {
@@ -31,9 +39,16 @@ socket.on("move", (data) => {
         setCellValue(data.cell, data.symbol);
         current_player_turn = true;
     }
+
     if (data.game_status == "won") {
-        alert(`${data.user} (${data.symbol}) won the game`);
+        current_player_turn = false;
+        alert(
+            data.user == username
+                ? "You've won"
+                : `${data.user} (${data.symbol}) won the game`
+        );
     } else if (data.game_status == "draw") {
+        current_player_turn = false;
         alert(`The match is a draw`);
     }
 });
@@ -42,6 +57,8 @@ function setCellValue(cell, symbol) {
     const el = document.getElementById(cell);
     el.innerHTML = symbol;
     el.classList.add("filled-cell");
+    const [r, c] = cell.split("-");
+    board[r][c] = symbol;
 }
 
 const onClickOfCell = (cell) => {
@@ -53,17 +70,6 @@ const onClickOfCell = (cell) => {
     setCellValue(cell, player_symbol);
 
     // check if the move has made the player win
-    let board = [[], [], []];
-    document.querySelectorAll(".cell").forEach((el) => {
-        const [r, c] = el.id.split("-");
-        let cur_symbol = el.innerHTML;
-        if (cur_symbol != "X" && cur_symbol != "O") {
-            cur_symbol = " ";
-        }
-
-        board[r].push(cur_symbol);
-    });
-
     const [r, c] = cell.split("-");
     let win_status = winningAlgorithm(
         board,
@@ -89,13 +95,14 @@ const onClickOfCell = (cell) => {
     current_player_turn = false;
 };
 
-// ADD EVENT LISTENER TO CELLS
-document.querySelectorAll(".cell").forEach((cell) => {
-    cell.addEventListener("click", (el) => {
-        onClickOfCell(el.target.getAttribute("id"));
-    });
-});
-
+/**
+ * THe function to check if the user has won
+ * @param {*} board
+ * @param {*} row
+ * @param {*} col
+ * @param {*} symbol
+ * @returns True || False || null
+ */
 function winningAlgorithm(board, row, col, symbol) {
     // entire row
     let row_is_correct = true;
@@ -157,3 +164,10 @@ function winningAlgorithm(board, row, col, symbol) {
 
     return false;
 }
+
+//EVENT LISTENERs
+document.querySelectorAll(".cell").forEach((cell) => {
+    cell.addEventListener("click", (el) => {
+        onClickOfCell(el.target.getAttribute("id"));
+    });
+});
